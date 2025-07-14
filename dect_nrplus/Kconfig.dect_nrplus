@@ -1,0 +1,208 @@
+# /* lib/dect_nrplus/Kconfig.dect_nrplus */
+# Kconfig for DECT NR+ L2 Driver Integration
+
+# This Kconfig fragment should be sourced by a higher-level Kconfig file,
+# typically drivers/net/Kconfig
+
+# Option to enable the DECT NR+ L2 driver itself
+config NET_L2_DECT_NRPLUS
+	bool "DECT NR+ L2 network driver"
+    default y if DECT_NRPLUS_STACK
+	depends on DECT_NRPLUS_STACK    
+	depends on NETWORKING
+	depends on DECT_MAC_LAYER
+    select NET_L2_ETHERNET 
+	select NET_L2_PPP
+	select NRF_MODEM_LIB
+	select FLASH  
+	select ZMS  
+
+    
+if NET_L2_DECT_NRPLUS
+
+    # Ensure the underlying MAC layer is also enabled if this L2 is used
+    config DECT_NRPLUS_RX_THREAD_STACK_SIZE
+        int "DECT NR+ L2 driver RX thread stack size"
+        default 2048
+        # help
+        #   Stack size for the DECT NR+ L2 driver's RX thread. This thread
+        #   receives data from the CVG layer and passes it up to the IP stack.
+        #   Ensure this is adequate for CVG receive calls and net_pkt handling.
+    
+    config DECT_NRPLUS_RX_THREAD_PRIORITY
+        int "DECT NR+ L2 driver RX thread priority"
+        default 6 # Slightly higher than default app threads, but lower than MAC thread
+        # help
+        #   Priority for the DECT NR+ L2 driver's RX thread.
+
+    config DECT_NRPLUS_INIT_PRIORITY
+        int "DECT NR+ L2 driver initialization priority"
+        default 80 # Typical for network drivers
+        # help
+        #   Initialization priority of the DECT NR+ L2 network driver.
+
+    config DECT_NRPLUS_LOG_LEVEL
+        int "DECT NR+ L2 driver log level"
+        default 3 # Info
+        range 0 4
+        depends on NET_LOG && LOG # Ensure LOG is also enabled
+        # help
+        #   Log level for the DECT NR+ L2 network driver.
+        #   0=off, 1=error, 2=warning, 3=info, 4=debug.
+
+    config NET_CONFIG_MY_IPV6_PREFIX
+        string "My IPv6 prefix"
+        default "2001:db8:abcd:efab::" # The 2001:db8::/32 block is reserved for documentation and examples. This is great for testing and tutorials.
+
+
+    # Option for 6LoWPAN integration over DECT NR+
+    config NET_L2_6LO_DECT_NRPLUS
+        bool "6LoWPAN over DECT NR+"
+        depends on NET_IPV6 # 6LoWPAN requires IPv6
+        select NET_6LO_CONTEXT
+        select NET_6LO
+        select NET_L2_SIXLoWPAN # Selects the generic 6LoWPAN L2 component
+        # help
+        #   Enable 6LoWPAN adaptation layer to run on top of the DECT NR+ L2 driver.
+        #   This allows IPv6 packets to be compressed and fragmented for transmission
+        #   over the DECT NR+ link. The DECT NR+ L2 driver will then interact with
+        #   the CVG layer.
+
+
+menu "DECT NR+ Stack Logging Levels"
+	# depends on LOG
+
+	# --- L2 Driver Log Level ---
+	config DECT_NRPLUS_LOG_LEVEL
+		int "L2 Driver Log Level"
+		default 3
+		range 0 4
+		help
+		  Log level for the DECT NR+ L2 network driver.
+		  0=off, 1=error, 2=warning, 3=info, 4=debug.
+
+	# --- Convergence (CVG) Layer Log Level ---
+	config DECT_CVG_LOG_LEVEL
+		int "CVG Layer Log Level"
+		default 3
+		range 0 4
+		help
+		  Log level for the DECT NR+ Convergence (CVG) layer.
+
+	# --- Data Link Control (DLC) Layer Log Level ---
+	config DECT_DLC_LOG_LEVEL
+		int "DLC Layer Log Level"
+		default 3
+		range 0 4
+		help
+		  Log level for the DECT NR+ Data Link Control (DLC) layer.
+
+	# --- Configuration Data Distribution (CDD) Service Log Level ---
+	config DECT_CDD_LOG_LEVEL
+		int "CDD Service Log Level"
+		default 3
+		range 0 4
+		help
+		  Log level for the Configuration Data Distribution (CDD) service.
+
+	# --- MAC Layer Submodule Log Levels ---
+	menu "MAC Layer Submodule Logging"
+		depends on DECT_MAC_LAYER
+
+		config DECT_MAC_API_LOG_LEVEL
+			int "Log level for MAC API"
+			default 3
+			range 0 4
+			help
+			  Log level for the DECT MAC API module.
+
+		config DECT_MAC_CORE_LOG_LEVEL
+			int "Log level for MAC Core"
+			default 3
+			range 0 4
+			help
+			  Log level for the DECT MAC Core module.
+
+		config DECT_MAC_DATA_PATH_LOG_LEVEL
+			int "Log level for MAC Data Path"
+			default 3
+			range 0 4
+			help
+			  Log level for the DECT MAC Data Path module.
+
+		config DECT_MAC_DISPATCHER_LOG_LEVEL
+			int "Log level for MAC Main Dispatcher"
+			default 3
+			range 0 4
+			help
+			  Log level for the DECT MAC Main Dispatcher module.
+
+		config DECT_MAC_MGMT_LOG_LEVEL
+			int "Log level for MAC Management Service"
+			default 3
+			range 0 4
+			help
+			  Log level for the DECT MAC Management Service module.
+
+		config DECT_MAC_NVS_LOG_LEVEL
+			int "Log level for MAC NVS"
+			default 3
+			range 0 4
+			help
+			  Log level for the DECT MAC NVS module.
+
+		config DECT_MAC_PDU_LOG_LEVEL
+			int "Log level for MAC PDU (De)serializers"
+			default 3
+			range 0 4
+			help
+			  Log level for the DECT MAC PDU module.
+
+		config DECT_MAC_PHY_CTRL_LOG_LEVEL
+			int "Log level for MAC PHY Control"
+			default 3
+			range 0 4
+			help
+			  Log level for the DECT MAC PHY Control module.
+
+		config DECT_MAC_PHY_IF_LOG_LEVEL
+			int "Log level for MAC PHY Interface"
+			default 3
+			range 0 4
+			help
+			  Log level for the DECT MAC PHY Interface module.
+
+		config DECT_MAC_SECURITY_LOG_LEVEL
+			int "Log level for MAC Security"
+			default 3
+			range 0 4
+			help
+			  Log level for the DECT MAC Security module.
+
+		config DECT_MAC_SM_FT_LOG_LEVEL
+			int "Log level for MAC FT State Machine"
+			default 3
+			range 0 4
+			help
+			  Log level for the DECT MAC FT State Machine module.
+
+		config DECT_MAC_SM_PT_LOG_LEVEL
+			int "Log level for MAC PT State Machine"
+			default 3
+			range 0 4
+			help
+			  Log level for the DECT MAC PT State Machine module.
+
+		config DECT_MAC_SHELL_LOG_LEVEL
+			int "Log level for MAC Shell"
+			default 3
+			range 0 4
+			depends on DECT_MAC_SHELL_ENABLE
+			help
+			  Log level for the DECT MAC Shell module.
+
+	endmenu # MAC Layer Submodule Logging
+
+endmenu # DECT NR+ Stack Logging Levels
+
+endif # NET_L2_DECT_NRPLUS

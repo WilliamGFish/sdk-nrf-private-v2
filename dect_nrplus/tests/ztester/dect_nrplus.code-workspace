@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"name": "dect_nrplus",
+			"path": "../.."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"dect_mac_context.h": "c",
+			"dect_cdd.h": "c",
+			"kernel.h": "c",
+			"nvs.h": "c",
+			"dect_mac_main_dispatcher.h": "c",
+			"dect_mac_core.h": "c"
+		},
+		"nrf-connect.applications": [
+			"${workspaceFolder}\\samples\\ztester",
+			"${workspaceFolder}\\tests\\ztester"
+		]
+	}
+}

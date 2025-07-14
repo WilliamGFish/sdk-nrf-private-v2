@@ -1,0 +1,5 @@
+
+tests:
+  testing.dect_nrplus.mac.integration:
+    tags: dect_nrplus mac sm flow
+    platform_allow: native_posix, native_sim
