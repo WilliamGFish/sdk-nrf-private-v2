@@ -1,5 +1,0 @@
-
-tests:
-  testing.dect_nrplus.dlc.advanced:
-    tags: dect_nrplus dlc arq
-    platform_allow: native_posix

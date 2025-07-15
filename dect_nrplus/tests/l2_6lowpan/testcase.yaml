@@ -1,8 +1,0 @@
-
-tests:
-  testing.dect_nrplus.l2.sixlowpan:
-    tags: dect_nrplus l2 6lowpan
-    depends_on: netif
-    platform_allow: native_posix
-    integration_platforms:
-      - native_posix

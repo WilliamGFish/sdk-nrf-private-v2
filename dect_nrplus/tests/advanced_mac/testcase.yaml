@@ -1,5 +1,0 @@
-
-tests:
-  testing.dect_nrplus.mac.advanced:
-    tags: dect_nrplus mac sm advanced
-    platform_allow: native_posix

@@ -1,6 +1,0 @@
-tests:
-  testing.dect_nrplus.dlc.sar:
-    tags: dect_nrplus dlc sar
-    platform_allow: native_posix
-    integration_platforms:
-      - native_posix

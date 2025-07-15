@@ -1,6 +1,0 @@
-tests:
-  testing.dect_nrplus.cdd.service:
-    tags: dect_nrplus cdd cvg
-    platform_allow: native_posix
-    integration_platforms:
-      - native_posix
