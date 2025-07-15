@@ -5,9 +5,11 @@
 #include <zephyr/kernel.h>
 #include <string.h>
 #include <zephyr/sys/byteorder.h>
+#include <mbedtls/platform_util.h>
 #include <zephyr/random/random.h>
-#include <zephyr/crypto/crypto.h>
-#include <zephyr/sys/util.h> 
+#include <mbedtls/platform_util.h>	
+#include <mbedtls/constant_time.h>
+
 
 #include <mac/dect_mac_api.h>
 #include <mac/dect_mac_core.h>
@@ -656,8 +658,9 @@ static void cvg_rx_thread_entry(void *p1, void *p2, void *p3)
 					size_t sdu_len = payload_len - 5;
 					uint8_t calculated_mic[5];
 					err = security_calculate_mic(payload_ptr, sdu_len, g_default_cvg_flow_ctx.integrity_key, calculated_mic);
+					// if (err || crypto_memcmp(received_mic, calculated_mic, 5) != 0) {
+					// if (err || mbedtls_platform_memcmp(received_mic, calculated_mic, 5) != 0) {
 					if (err || constant_time_memcmp(received_mic, calculated_mic, 5) != 0) {	
-					// if (err || sys_memcmp_const(received_mic, calculated_mic, 5) != 0) {	
 						LOG_ERR("CVG_RX_SEC: MIC verification failed for SN %u", sn);
 						break;
 					}

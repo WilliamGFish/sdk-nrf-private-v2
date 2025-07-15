@@ -37,47 +37,6 @@ static void teardown(void *data)
 	memcpy(plaintext_data, original_plaintext_data, sizeof(plaintext_data));
 }
 
-/**
- * @brief One-time setup function for the security test suite.
- *
- * This function is called by the Ztest framework before any tests in this suite
- * are run. It's the perfect place to initialize the security module.
- */
-static void *security_suite_setup(void)
-{
-    int err = security_init();
-    
-    // In a test, we want to fail immediately if setup fails.
-    // zassert_ok is the best way to do this.
-    zassert_ok(err, "security_init() failed during test suite setup");
-
-    return NULL; // Return NULL as we don't need to pass a context fixture
-}
-
-/**
- * @brief Per-test setup function.
- *
- * This function is called before EACH test case. It's used to reset state
- * to a known-good condition before every test.
- */
-static void before_each_test(void *data)
-{
-	ARG_UNUSED(data);
-	memcpy(original_plaintext_data, plaintext_data, sizeof(plaintext_data));
-}
-
-/**
- * @brief Per-test teardown function.
- *
- * This function is called after EACH test case. It's used for cleanup.
- */
-static void after_each_test(void *data)
-{
-	ARG_UNUSED(data);
-	/* Restore plaintext data in case it was modified in-place by a test */
-	memcpy(plaintext_data, original_plaintext_data, sizeof(plaintext_data));
-}
-
 /* --- Test Cases --- */
 
 ZTEST(security_tests, test_kdf_derivation)
@@ -218,5 +177,4 @@ ZTEST(security_tests, test_full_auth_handshake)
 	TC_PRINT("Step 3/4: FT MAC successfully generated and verified by PT.\n");
 }
 
-// ZTEST_SUITE(security_tests, NULL, setup, NULL, NULL, teardown);
-ZTEST_SUITE(security_tests, NULL, security_suite_setup, before_each_test, after_each_test, teardown);
+ZTEST_SUITE(security_tests, NULL, setup, NULL, NULL, teardown);

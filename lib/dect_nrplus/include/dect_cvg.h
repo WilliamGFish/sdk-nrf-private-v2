@@ -10,10 +10,8 @@
 #include <string.h>
 #include <zephyr/sys/byteorder.h>
 #include <zephyr/random/random.h>
-#include <zephyr/crypto/crypto.h>
-// #include <mbedtls/platform.h>
-// #include <mbedtls/constant_time.h>
-// #include <mbedtls/platform_util.h>
+#include <mbedtls/constant_time.h>
+#include <mbedtls/platform_util.h>
 
 /**
  * @file dect_cvg.h
